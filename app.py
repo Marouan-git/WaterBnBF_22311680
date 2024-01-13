@@ -111,7 +111,7 @@ def openthedoor():
     # ip addresses of the machine asking for opening
     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-    if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines.keys() and piscines[idswp]["occuped"] == False):
+    if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
         granted = "YES"
     else:
         granted = "NO"
@@ -175,9 +175,12 @@ def handle_mqtt_message(client, userdata, msg):
         hotspot = dic["piscine"]["hotspot"]
         occuped = dic["piscine"]["occuped"]
 
+        if who not in piscines:
+            piscines[who] = {}
         piscines[who]["temp"] = t
         piscines[who]["hotspot"] = hotspot
         piscines[who]["occuped"] = occuped
+        
 
 
 #%%%%%%%%%%%%%  main driver function
