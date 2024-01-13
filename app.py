@@ -53,6 +53,9 @@ if ADMIN :
         #print(ls)
         if userscollection.find_one({"name" : ls[0]}) ==  None:
             userscollection.insert_one({"name": ls[0], "num": ls[1]})
+
+# Existing swimming pools
+piscines = dict()
     
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -108,7 +111,7 @@ def openthedoor():
     # ip addresses of the machine asking for opening
     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-    if userscollection.find_one({"name" : idu}) !=  None:
+    if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines.keys() and piscines[idswp]["occuped"] == False):
         granted = "YES"
     else:
         granted = "NO"
@@ -169,6 +172,12 @@ def handle_mqtt_message(client, userdata, msg):
 
         who = dic["info"]["ident"] # Qui a publié ?
         t = dic["status"]["temperature"] # Quelle température ?
+        hotspot = dic["piscine"]["hotspot"]
+        occuped = dic["piscine"]["occuped"]
+
+        piscines[who]["temp"] = t
+        piscines[who]["hotspot"] = hotspot
+        piscines[who]["occuped"] = occuped
 
 
 #%%%%%%%%%%%%%  main driver function
