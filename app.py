@@ -111,6 +111,13 @@ def openthedoor():
     # ip addresses of the machine asking for opening
     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
+    print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
+    print(f"Piscine exists: {idswp in piscines}")
+    print(f"Piscine occupied: {piscines[idswp]['occuped']}")
+
+    for key in piscines.keys():
+        print(key)
+
     if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
         granted = "YES"
     else:
