@@ -141,11 +141,11 @@ def publish_message():
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 # Initialisation MQTT
 app.config['MQTT_BROKER_URL'] =  "test.mosquitto.org"
-app.config['MQTT_BROKER_PORT'] = 8883
+app.config['MQTT_BROKER_PORT'] = 1883
 #app.config['MQTT_USERNAME'] = ''  # Set this item when you need to verify username and password
 #app.config['MQTT_PASSWORD'] = ''  # Set this item when you need to verify username and password
 #app.config['MQTT_KEEPALIVE'] = 5  # Set KeepAlive time in seconds
-app.config['MQTT_TLS_ENABLED'] = True  # If your broker supports TLS, set it True
+app.config['MQTT_TLS_ENABLED'] = False  # If your broker supports TLS, set it True
 
 topicname = "uca/iot/piscine"
 mqtt_client = Mqtt(app)
