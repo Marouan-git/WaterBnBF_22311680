@@ -108,6 +108,7 @@ def openthedoor():
     idswp = request.args.get('idswp')  #idswp : id of the swimming pool
     session['idu'] = idu
     session['idswp'] = idswp
+    print(f'idu value : {idu}, and idwsp value : {idswp}')
     print("\n Peer = {}".format(idu))
 
     # ip addresses of the machine asking for opening
