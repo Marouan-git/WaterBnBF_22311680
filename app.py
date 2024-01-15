@@ -171,22 +171,35 @@ def handle_mqtt_message(client, userdata, msg):
     print("\n msg.topic = {}".format(msg.topic))
     print("\n topicname = {}".format(topicname))
     
-    if (msg.topic == topicname) : # cf https://stackoverflow.com/questions/63580034/paho-updating-userdata-from-on-message-callback
-        decoded_message =str(msg.payload.decode("utf-8"))
-        #print("\ndecoded message received = {}".format(decoded_message))
-        dic =json.loads(decoded_message) # from string to dict
-        #print("\n Dictionnary  received = {}".format(dic))
+    if (msg.topic == topicname):
+        decoded_message = str(msg.payload.decode("utf-8"))
+        print(f'In topic !! decoded message : {decoded_message}')
+        dic = {}
 
-        who = dic["info"]["ident"] # Qui a publié ?
-        t = dic["status"]["temperature"] # Quelle température ?
-        hotspot = dic["piscine"]["hotspot"]
-        occuped = dic["piscine"]["occuped"]
+        try:
+            dic = json.loads(decoded_message)
+            print(f'dic in mqtt message : {dic}')
+            who = dic["info"]["ident"]
+            print(f'who in mqtt message : {who}')
+            t = dic["status"]["temperature"]
+            hotspot = dic["piscine"]["hotspot"]
+            occuped = dic["piscine"]["occuped"]
 
-        if who not in piscines:
-            piscines[who] = {}
-        piscines[who]["temp"] = t
-        piscines[who]["hotspot"] = hotspot
-        piscines[who]["occuped"] = occuped
+            if who not in piscines:
+                piscines[who] = {}
+            piscines[who]["temp"] = t
+            piscines[who]["hotspot"] = hotspot
+            piscines[who]["occuped"] = occuped
+
+            print(f'recap final : {piscines[who]}')
+
+        except KeyError as e:
+            print(f"KeyError: {e} not found in the received message")
+            # Handle the missing key as needed
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: Failed to decode the received message - {e}")
+            # Handle the JSON decoding error as needed
+
         
 
 
