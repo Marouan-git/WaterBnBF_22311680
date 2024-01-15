@@ -6,6 +6,7 @@ from flask import jsonify
 from flask import Flask
 from flask import session
 from flask import render_template
+from flask import g
 #https://python-adv-web-apps.readthedocs.io/en/latest/flask.html
 
 #https://www.emqx.com/en/blog/how-to-use-mqtt-in-flask
@@ -54,13 +55,17 @@ if ADMIN :
         if userscollection.find_one({"name" : ls[0]}) ==  None:
             userscollection.insert_one({"name": ls[0], "num": ls[1]})
 
-# Existing swimming pools
-piscines = dict()
-    
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Initialisation :  Flask service
 app = Flask(__name__)
+
+# Existing swimming pools
+@app.before_request
+def before_request():
+    """ Initialize 'piscines' in Flask's global 'g' object if not already present """
+    if 'piscines' not in g:
+        g.piscines = dict()
 
 # Notion de session ! .. to share between routes !
 # https://flask-session.readthedocs.io/en/latest/quickstart.html
@@ -102,10 +107,10 @@ def client():
 @app.route("/open", methods= ['GET', 'POST'])
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
-    global piscines
+    global g.piscines
 
-    # Assuming 'piscines' is the dictionary you want to display
-    for key, value in piscines.items():
+    # Assuming 'g.piscines' is the dictionary you want to display
+    for key, value in g.piscines.items():
         print(f"Pool ID: {key}")
         print(f"Temperature: {value.get('temp', 'N/A')}")
         print(f"Hotspot: {value.get('hotspot', 'N/A')}")
@@ -124,13 +129,13 @@ def openthedoor():
     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
     print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
-    print(f"Piscine exists: {idswp in piscines}")
-    print(f"Piscine occupied: {piscines[idswp]['occuped']}")
+    print(f"Piscine exists: {idswp in g.piscines}")
+    print(f"Piscine occupied: {g.piscines[idswp]['occuped']}")
 
-    for key in piscines.keys():
+    for key in g.piscines.keys():
         print(key)
 
-    if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
+    if userscollection.find_one({"name" : idu}) !=  None and (idswp in g.piscines and g.piscines[idswp]["occuped"] == False):
         granted = "YES"
     else:
         granted = "NO"
@@ -174,7 +179,7 @@ def handle_connect(client, userdata, flags, rc):
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
     global topicname
-    global piscines
+    global g.piscines
     
     data = dict(
         topic=msg.topic,
@@ -198,13 +203,13 @@ def handle_mqtt_message(client, userdata, msg):
             hotspot = dic["piscine"]["hotspot"]
             occuped = dic["piscine"]["occuped"]
 
-            if who not in piscines:
-                piscines[who] = {}
-            piscines[who]["temp"] = t
-            piscines[who]["hotspot"] = hotspot
-            piscines[who]["occuped"] = occuped
+            if who not in g.piscines:
+                g.piscines[who] = {}
+            g.piscines[who]["temp"] = t
+            g.piscines[who]["hotspot"] = hotspot
+            g.piscines[who]["occuped"] = occuped
 
-            print(f'recap final : {piscines[who]}')
+            print(f'recap final : {g.piscines[who]}')
 
         except KeyError as e:
             print(f"KeyError: {e} not found in the received message")
