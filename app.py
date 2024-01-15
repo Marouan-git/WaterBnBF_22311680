@@ -102,7 +102,16 @@ def client():
 @app.route("/open", methods= ['GET', 'POST'])
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
-    global piscines 
+    global piscines
+
+    # Assuming 'piscines' is the dictionary you want to display
+    for key, value in piscines.items():
+        print(f"Pool ID: {key}")
+        print(f"Temperature: {value.get('temp', 'N/A')}")
+        print(f"Hotspot: {value.get('hotspot', 'N/A')}")
+        print(f"Occupied: {value.get('occuped', 'N/A')}")
+        print("---------------")
+
     
     idu = request.args.get('idu') # idu : clientid of the service
     idswp = request.args.get('idswp')  #idswp : id of the swimming pool
