@@ -162,6 +162,7 @@ def handle_connect(client, userdata, flags, rc):
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
     global topicname
+    global piscines
     
     data = dict(
         topic=msg.topic,
