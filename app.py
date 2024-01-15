@@ -107,8 +107,6 @@ def client():
 @app.route("/open", methods= ['GET', 'POST'])
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
-    global g.piscines
-
     # Assuming 'g.piscines' is the dictionary you want to display
     for key, value in g.piscines.items():
         print(f"Pool ID: {key}")
@@ -179,7 +177,6 @@ def handle_connect(client, userdata, flags, rc):
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
     global topicname
-    global g.piscines
     
     data = dict(
         topic=msg.topic,
