@@ -127,7 +127,7 @@ def openthedoor():
 
         # for key in piscines.keys():
         #     print(key)
-
+        print(idswp , piscines[idswp]["occuped"])
         if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
             print("granted")
             granted = "YES"
