@@ -195,7 +195,6 @@ def handle_mqtt_message(client, userdata, msg):
                     "hotspot": hotspot,
                     "occuped": occuped
                 }
-            print('piscine', piscines)
         except KeyError as e:
             print(f"KeyError: {e} not found in the received message")
         except json.JSONDecodeError as e:
