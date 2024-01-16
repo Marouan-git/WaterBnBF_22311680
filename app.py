@@ -123,6 +123,9 @@ def openthedoor():
             print("granted")
             granted = "YES"
 
+        if idswp == "P_22311680" : # ID de Marouan, utilisé pour les test
+            mqtt_client.publish(topicname_second, granted)
+
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
@@ -149,6 +152,7 @@ app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_TLS_ENABLED'] = False  # If your broker supports TLS, set it True
 
 topicname = "uca/iot/piscine"
+topicname_second = "uca/iot/tajine_granted"
 mqtt_client = Mqtt(app)
 
 @mqtt_client.on_connect()
@@ -156,6 +160,7 @@ def handle_connect(client, userdata, flags, rc):
    if rc == 0:
        print('Connected successfully')
        mqtt_client.subscribe(topicname) # subscribe topic
+       mqtt_client.subscribe(topicname_second) # subscribe topic
    else:
        print('Bad connection. Code:', rc)
 
@@ -201,8 +206,6 @@ def handle_mqtt_message(client, userdata, msg):
             print(f"JSONDecodeError: Failed to decode the received message - {e}")
         except Exception as e:
             print(f"An error occurred: {e}")
-
-
 
         
 
