@@ -58,11 +58,6 @@ if ADMIN :
 # Initialisation :  Flask service
 app = Flask(__name__)
 
-# Existing swimming pools
-piscines = dict()
-
-test = "#################TEST#################"
-
 # Notion de session ! .. to share between routes !
 # https://flask-session.readthedocs.io/en/latest/quickstart.html
 # https://testdriven.io/blog/flask-sessions/
@@ -103,41 +98,38 @@ def client():
 @app.route("/open", methods= ['GET', 'POST'])
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
-    global piscines
-    global test
-
-    print(f"Test variable: {test}")
-
-    # Assuming 'piscines' is the dictionary you want to display
-    for key, value in piscines.items():
-        print(f"Pool ID: {key}")
-        print(f"Temperature: {value.get('temp', 'N/A')}")
-        print(f"Hotspot: {value.get('hotspot', 'N/A')}")
-        print(f"Occupied: {value.get('occuped', 'N/A')}")
-        print("---------------")
+    granted = "NO"
+    piscines = session.get("piscines")
+    if piscines is not None:
+        # Assuming 'piscines' is the dictionary you want to display
+        # for key, value in piscines.items():
+        #     print(f"Pool ID: {key}")
+        #     print(f"Temperature: {value.get('temp', 'N/A')}")
+        #     print(f"Hotspot: {value.get('hotspot', 'N/A')}")
+        #     print(f"Occupied: {value.get('occuped', 'N/A')}")
+        #     print("---------------")
 
     
-    idu = request.args.get('idu') # idu : clientid of the service
-    idswp = request.args.get('idswp')  #idswp : id of the swimming pool
-    session['idu'] = idu
-    session['idswp'] = idswp
-    print(f'idu value : {idu}, and idwsp value : {idswp}')
-    print("\n Peer = {}".format(idu))
+        idu = request.args.get('idu') # idu : clientid of the service
+        idswp = request.args.get('idswp')  #idswp : id of the swimming pool
+        session['idu'] = idu
+        session['idswp'] = idswp
+        # print(f'idu value : {idu}, and idwsp value : {idswp}')
+        # print("\n Peer = {}".format(idu))
 
-    # ip addresses of the machine asking for opening
-    ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+        # ip addresses of the machine asking for opening
+        ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-    print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
-    print(f"Piscine exists: {idswp in piscines}")
-    print(f"Piscine occupied: {piscines[idswp]['occuped']}")
+        # print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
+        # print(f"Piscine exists: {idswp in piscines}")
+        # print(f"Piscine occupied: {piscines[idswp]['occuped']}")
 
-    for key in piscines.keys():
-        print(key)
+        # for key in piscines.keys():
+        #     print(key)
 
-    if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
-        granted = "YES"
-    else:
-        granted = "NO"
+        if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
+            granted = "YES"
+
     return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
@@ -174,55 +166,85 @@ def handle_connect(client, userdata, flags, rc):
    else:
        print('Bad connection. Code:', rc)
 
+# Define a global variable to store the pool information
+piscines_global = {}
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
-    global topicname
-    global piscines
-    global test
-    
-    data = dict(
-        topic=msg.topic,
-        payload=msg.payload.decode()
-    )
-    #    print('Received message on topic: {topic} with payload: {payload}'.format(**data))
-    print("\n msg.topic = {}".format(msg.topic))
-    print("\n topicname = {}".format(topicname))
-    
+    global piscines_global  # Reference the global variable
+
     if (msg.topic == topicname):
         decoded_message = str(msg.payload.decode("utf-8"))
-        print(f'In topic !! decoded message : {decoded_message}')
+        # print(f'In topic !! decoded message : {decoded_message}')
         dic = {}
 
         try:
             dic = json.loads(decoded_message)
-            print(f'dic in mqtt message : {dic}')
+          
             who = dic["info"]["ident"]
-            print(f'who in mqtt message : {who}')
             t = dic["status"]["temperature"]
             hotspot = dic["piscine"]["hotspot"]
             occuped = dic["piscine"]["occuped"]
-            
-            
-            if who not in piscines:
-                piscines[who] = {}
-            piscines[who]["temp"] = t
-            piscines[who]["hotspot"] = hotspot
-            piscines[who]["occuped"] = occuped
 
-            print(f'recap final : {piscines[who]}')
+            # Update the global variable with the new data
 
-            test = "################# MODIFIED ###############"
-
-            
-            
+            if who is not None:
+                piscines_global[who] = {
+                    "temp": t,
+                    "hotspot": hotspot,
+                    "occuped": occuped
+                }
 
         except KeyError as e:
             print(f"KeyError: {e} not found in the received message")
-            # Handle the missing key as needed
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: Failed to decode the received message - {e}")
-            # Handle the JSON decoding error as needed
+
+# @mqtt_client.on_message()
+# def handle_mqtt_message(client, userdata, msg):
+#     global topicname
+
+#     piscines = {}
+    
+#     data = dict(
+#         topic=msg.topic,
+#         payload=msg.payload.decode()
+#     )
+#     #    print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+#     print("\n msg.topic = {}".format(msg.topic))
+#     print("\n topicname = {}".format(topicname))
+    
+#     if (msg.topic == topicname):
+#         decoded_message = str(msg.payload.decode("utf-8"))
+#         print(f'In topic !! decoded message : {decoded_message}')
+#         dic = {}
+
+#         try:
+#             dic = json.loads(decoded_message)
+#             print(f'dic in mqtt message : {dic}')
+#             who = dic["info"]["ident"]
+#             print(f'who in mqtt message : {who}')
+#             t = dic["status"]["temperature"]
+#             hotspot = dic["piscine"]["hotspot"]
+#             occuped = dic["piscine"]["occuped"]
+
+#             if who not in piscines:
+#                 piscines[who] = {}
+#             piscines[who]["temp"] = t
+#             piscines[who]["hotspot"] = hotspot
+#             piscines[who]["occuped"] = occuped
+
+#             with app.app_context():
+#                 session["piscines"][who] = piscines[who]
+#                 print(f'recap final : {session["piscines"][who]}')
+  
+
+#         except KeyError as e:
+#             print(f"KeyError: {e} not found in the received message")
+#             # Handle the missing key as needed
+#         except json.JSONDecodeError as e:
+#             print(f"JSONDecodeError: Failed to decode the received message - {e}")
+#             # Handle the JSON decoding error as needed
 
         
 
