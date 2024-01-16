@@ -110,29 +110,29 @@ def openthedoor():
         #     print(f"Occupied: {value.get('occuped', 'N/A')}")
         #     print("---------------")
 
-    
-        idu = request.args.get('idu') # idu : clientid of the service
-        idswp = request.args.get('idswp')  #idswp : id of the swimming pool
-        session['idu'] = idu
-        session['idswp'] = idswp
-        # print(f'idu value : {idu}, and idwsp value : {idswp}')
-        # print("\n Peer = {}".format(idu))
+        if request.args.get('idu') is not None and request.args.get('idswp') is not None:
+            idu = request.args.get('idu') # idu : clientid of the service
+            idswp = request.args.get('idswp')  #idswp : id of the swimming pool
+            session['idu'] = idu
+            session['idswp'] = idswp
+            # print(f'idu value : {idu}, and idwsp value : {idswp}')
+            # print("\n Peer = {}".format(idu))
 
-        # ip addresses of the machine asking for opening
-        ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+            # ip addresses of the machine asking for opening
+            ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-        # print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
-        # print(f"Piscine exists: {idswp in piscines}")
-        # print(f"Piscine occupied: {piscines[idswp]['occuped']}")
+            # print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
+            # print(f"Piscine exists: {idswp in piscines}")
+            # print(f"Piscine occupied: {piscines[idswp]['occuped']}")
 
-        # for key in piscines.keys():
-        #     print(key)
-        print(idswp , piscines[idswp]["occuped"])
-        if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
-            print("granted")
-            granted = "YES"
+            # for key in piscines.keys():
+            #     print(key)
+            print(idswp , piscines)
+            if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
+                print("granted")
+                granted = "YES"
 
-    if session['idu'] is not None:
+    if session['idu'] is not None and  session['idswp'] is not None:
         return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
     else:
         return  jsonify({}), 200
