@@ -61,6 +61,8 @@ app = Flask(__name__)
 # Existing swimming pools
 piscines = dict()
 
+test = "#################TEST#################"
+
 # Notion de session ! .. to share between routes !
 # https://flask-session.readthedocs.io/en/latest/quickstart.html
 # https://testdriven.io/blog/flask-sessions/
@@ -102,6 +104,9 @@ def client():
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
     global piscines
+    global test
+
+    print(f"Test variable: {test}")
 
     # Assuming 'piscines' is the dictionary you want to display
     for key, value in piscines.items():
@@ -174,6 +179,7 @@ def handle_connect(client, userdata, flags, rc):
 def handle_mqtt_message(client, userdata, msg):
     global topicname
     global piscines
+    global test
     
     data = dict(
         topic=msg.topic,
@@ -196,7 +202,8 @@ def handle_mqtt_message(client, userdata, msg):
             t = dic["status"]["temperature"]
             hotspot = dic["piscine"]["hotspot"]
             occuped = dic["piscine"]["occuped"]
-
+            
+            
             if who not in piscines:
                 piscines[who] = {}
             piscines[who]["temp"] = t
@@ -204,6 +211,11 @@ def handle_mqtt_message(client, userdata, msg):
             piscines[who]["occuped"] = occuped
 
             print(f'recap final : {piscines[who]}')
+
+            test = "################# MODIFIED ###############"
+
+            
+            
 
         except KeyError as e:
             print(f"KeyError: {e} not found in the received message")
