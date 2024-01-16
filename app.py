@@ -100,7 +100,7 @@ def client():
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
     granted = "NO"
-    if piscines is not None:
+    if len(piscines) > 0:
         
         # Assuming 'piscines' is the dictionary you want to display
         # for key, value in piscines.items():
@@ -174,8 +174,6 @@ def handle_connect(client, userdata, flags, rc):
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
-    global piscines  # Reference the global variable
-
     if (msg.topic == topicname):
         decoded_message = str(msg.payload.decode("utf-8"))
         # print(f'In topic !! decoded message : {decoded_message}')
