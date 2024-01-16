@@ -26,7 +26,6 @@ client = MongoClient("mongodb+srv://visitor:doliprane@cluster0.seoqsai.mongodb.n
 # Looking for "WaterBnB" database
 #https://stackoverflow.com/questions/32438661/check-database-exists-in-mongodb-using-pymongo
 dbname= 'WaterBnB'
-piscines = {}
 dbnames = client.list_database_names()
 if dbname in dbnames: 
     print(f"{dbname} is there!")
@@ -44,6 +43,7 @@ else:
     print(f"YOU HAVE to CREATE the {collname} collection !\n")
     
 userscollection = db.users
+poolscollection = db.pools
 #-----------------------------------------------------------------------------
 # import authorized users .. if not already in ?
 if ADMIN :
@@ -96,47 +96,34 @@ def client():
 #If a request goes through multiple proxies, the IP addresses of each successive proxy is listed.
 # voir aussi le parsing !
 
-@app.route("/open", methods= ['GET', 'POST'])
-# @app.route('/open') # ou en GET seulement
+@app.route("/open", methods=['GET', 'POST'])
 def openthedoor():
     granted = "NO"
-    print(len(piscines))
-    if len(piscines) > 0:
-        
-        # Assuming 'piscines' is the dictionary you want to display
-        # for key, value in piscines.items():
-        #     print(f"Pool ID: {key}")
-        #     print(f"Temperature: {value.get('temp', 'N/A')}")
-        #     print(f"Hotspot: {value.get('hotspot', 'N/A')}")
-        #     print(f"Occupied: {value.get('occuped', 'N/A')}")
-        #     print("---------------")
 
-        if request.args.get('idu') is not None and request.args.get('idswp') is not None:
-            idu = request.args.get('idu') # idu : clientid of the service
-            idswp = request.args.get('idswp')  #idswp : id of the swimming pool
-            session['idu'] = idu
-            session['idswp'] = idswp
-            # print(f'idu value : {idu}, and idwsp value : {idswp}')
-            # print("\n Peer = {}".format(idu))
+    idu = request.args.get('idu')
+    idswp = request.args.get('idswp')
 
-            # ip addresses of the machine asking for opening
-            ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+    if idu and idswp:
+        session['idu'] = idu
+        session['idswp'] = idswp
 
-            # print(f"Name found: {userscollection.find_one({'name' : idu}) !=  None}")
-            # print(f"Piscine exists: {idswp in piscines}")
-            # print(f"Piscine occupied: {piscines[idswp]['occuped']}")
+        ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-            # for key in piscines.keys():
-            #     print(key)
-            print(idswp , piscines)
-            if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
-                print("granted")
-                granted = "YES"
+        user_exists = userscollection.find_one({"name": idu}) is not None
+        pool = poolscollection.find_one_and_update(
+            {"pool_id": idswp, "occuped": False},
+            {"$set": {"granted": "YES"}},
+            return_document=True
+        ) if idswp else None
 
-    if session['idu'] is not None and  session['idswp'] is not None:
-        return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
-    else:
-        return  jsonify({}), 200
+        print(f'user exists : {user_exists}\n')
+        print(f'pool exists : {pool}')
+
+        if user_exists and pool:
+            print("granted")
+            granted = "YES"
+
+    return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
 # Test with => curl https://waterbnbf.onrender.com/open?who=gillou
@@ -175,31 +162,46 @@ def handle_connect(client, userdata, flags, rc):
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
-    if (msg.topic == topicname):
+    if msg.topic == topicname:
         decoded_message = str(msg.payload.decode("utf-8"))
-        # print(f'In topic !! decoded message : {decoded_message}')
-        dic = {}
 
         try:
             dic = json.loads(decoded_message)
-          
-            who = dic["info"]["ident"]
-            t = dic["status"]["temperature"]
-            hotspot = dic["piscine"]["hotspot"]
-            occuped = dic["piscine"]["occuped"]
 
-            # Update the global variable with the new data
+            # Extract required information from the message
+            who = dic.get("info", {}).get("ident")
+            t = dic.get("status", {}).get("temperature")
+            hotspot = dic.get("piscine", {}).get("hotspot")
+            occuped = dic.get("piscine", {}).get("occuped")
 
-            if who is not None:
-                piscines[who] = {
+            # Ensure all required fields are present
+            if who is not None and t is not None and hotspot is not None and occuped is not None:
+                piscine = {
+                    "pool_id": who,
                     "temp": t,
                     "hotspot": hotspot,
+                    "granted" : "YES",
                     "occuped": occuped
                 }
-        except KeyError as e:
-            print(f"KeyError: {e} not found in the received message")
+
+                # Update the global variable with the new data
+                existing_pool = poolscollection.find_one({"pool_id": who})
+
+                if existing_pool is None:
+                    # If the pool doesn't exist, insert it
+                    poolscollection.insert_one(piscine)
+                else:
+                    # If the pool exists, update it
+                    poolscollection.update_one({"pool_id": who}, {"$set": piscine})
+
+            else:
+                print(f"Incomplete data in the received message from {who}")
+
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: Failed to decode the received message - {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
 
 
         
