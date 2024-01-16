@@ -100,6 +100,7 @@ def client():
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
     granted = "NO"
+    print(len(piscines))
     if len(piscines) > 0:
         
         # Assuming 'piscines' is the dictionary you want to display
