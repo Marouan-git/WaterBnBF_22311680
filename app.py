@@ -26,6 +26,7 @@ client = MongoClient("mongodb+srv://visitor:doliprane@cluster0.seoqsai.mongodb.n
 # Looking for "WaterBnB" database
 #https://stackoverflow.com/questions/32438661/check-database-exists-in-mongodb-using-pymongo
 dbname= 'WaterBnB'
+piscines = {}
 dbnames = client.list_database_names()
 if dbname in dbnames: 
     print(f"{dbname} is there!")
@@ -99,8 +100,8 @@ def client():
 # @app.route('/open') # ou en GET seulement
 def openthedoor():
     granted = "NO"
-    piscines = session.get("piscines")
     if piscines is not None:
+        
         # Assuming 'piscines' is the dictionary you want to display
         # for key, value in piscines.items():
         #     print(f"Pool ID: {key}")
@@ -129,8 +130,10 @@ def openthedoor():
 
         if userscollection.find_one({"name" : idu}) !=  None and (idswp in piscines and piscines[idswp]["occuped"] == False):
             granted = "YES"
-
-    return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
+    if session['idu'] is not None:
+        return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
+    else:
+        return  jsonify({'idu' : session['idu'], 'idswp' : session['idswp'], "granted" : granted}), 200
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
 # Test with => curl https://waterbnbf.onrender.com/open?who=gillou
@@ -166,12 +169,10 @@ def handle_connect(client, userdata, flags, rc):
    else:
        print('Bad connection. Code:', rc)
 
-# Define a global variable to store the pool information
-piscines_global = {}
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, msg):
-    global piscines_global  # Reference the global variable
+    global piscines  # Reference the global variable
 
     if (msg.topic == topicname):
         decoded_message = str(msg.payload.decode("utf-8"))
@@ -189,7 +190,7 @@ def handle_mqtt_message(client, userdata, msg):
             # Update the global variable with the new data
 
             if who is not None:
-                piscines_global[who] = {
+                piscines[who] = {
                     "temp": t,
                     "hotspot": hotspot,
                     "occuped": occuped
