@@ -103,32 +103,35 @@ def openthedoor():
     idu = request.args.get('idu')
     idswp = request.args.get('idswp')
 
-    if idu and idswp:
-        session['idu'] = idu
-        session['idswp'] = idswp
+    # if idu and idswp:
+    #     session['idu'] = idu
+    #     session['idswp'] = idswp
 
-        ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+    #     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-        user_exists = userscollection.find_one({"name": idu}) is not None
-        pool = poolscollection.find_one_and_update(
-            {"pool_id": idswp, "occuped": False},
-            {"$set": {"granted": "YES"}},
-            return_document=True
-        ) if idswp else None
+    #     user_exists = userscollection.find_one({"name": idu}) is not None
+    #     pool = poolscollection.find_one_and_update(
+    #         {"pool_id": idswp, "occuped": False},
+    #         {"$set": {"granted": "YES"}},
+    #         return_document=True
+    #     ) if idswp else None
 
-        print(f'user exists : {user_exists}')
-        print(f'pool exists : {pool}')
+    #     print(f'user exists : {user_exists}')
+    #     print(f'pool exists : {pool}')
 
-        if user_exists and pool:
-            print("granted")
-            granted = "YES"
+    #     if user_exists and pool:
+    #         print("granted")
+    #         granted = "YES"
 
 
-        print("id pool request", idswp)
-        print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "P_22312300")
-        if idswp == "P_22311680" or idswp == "P_22312300": 
-            mqtt_client.publish(topicname_second, granted)
+    #     print("id pool request", idswp)
+    #     print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "P_22312300")
+    #     if idswp == "P_22311680" or idswp == "P_22312300": 
+    #         mqtt_client.publish(topicname_second, granted)
 
+    # return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
+    print("Publishing on tajine topic!!!!!!!!!!!!!")
+    mqtt_client.publish(topicname_second, granted)
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
@@ -162,7 +165,7 @@ mqtt_client = Mqtt(app)
 def handle_connect(client, userdata, flags, rc):
    if rc == 0:
        print('Connected successfully')
-       mqtt_client.subscribe(topicname) # subscribe topic
+       #mqtt_client.subscribe(topicname) # subscribe topic
        mqtt_client.subscribe(topicname_second) # subscribe topic
    else:
        print('Bad connection. Code:', rc)
