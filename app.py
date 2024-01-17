@@ -116,7 +116,7 @@ def openthedoor():
             return_document=True
         ) if idswp else None
 
-        print(f'user exists : {user_exists}\n')
+        print(f'user exists : {user_exists}')
         print(f'pool exists : {pool}')
 
         if user_exists and pool:
@@ -204,6 +204,9 @@ def handle_mqtt_message(client, userdata, msg):
 
             else:
                 print(f"Incomplete data in the received message from {who}")
+
+            if msg.topic == topicname_second:
+                print("message received on topic_granted topic !")
 
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: Failed to decode the received message - {e}")
