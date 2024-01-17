@@ -205,8 +205,8 @@ def handle_mqtt_message(client, userdata, msg):
             else:
                 print(f"Incomplete data in the received message from {who}")
 
-            if msg.topic == topicname_second:
-                print("message received on topic_granted topic !")
+        if msg.topic == topicname_second:
+            print("message received on topic_granted topic !")
 
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: Failed to decode the received message - {e}")
