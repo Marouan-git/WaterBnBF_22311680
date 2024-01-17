@@ -125,7 +125,7 @@ def openthedoor():
 
 
         print("id pool request", idswp)
-        print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "22312300")
+        print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "P_22312300")
         if idswp == "P_22311680" or idswp == "P_22312300": 
             mqtt_client.publish(topicname_second, granted)
 
@@ -172,6 +172,7 @@ def handle_connect(client, userdata, flags, rc):
 def handle_mqtt_message(client, userdata, msg):
     if msg.topic == topicname:
         decoded_message = str(msg.payload.decode("utf-8"))
+        print("Received on topic piscine!!!")
 
         try:
             dic = json.loads(decoded_message)
