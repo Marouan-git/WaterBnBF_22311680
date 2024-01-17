@@ -172,7 +172,6 @@ def handle_connect(client, userdata, flags, rc):
 def handle_mqtt_message(client, userdata, msg):
     if msg.topic == topicname:
         decoded_message = str(msg.payload.decode("utf-8"))
-        print("Received on topic piscine!!!")
 
         try:
             dic = json.loads(decoded_message)
