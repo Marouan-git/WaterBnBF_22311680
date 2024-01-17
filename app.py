@@ -123,7 +123,10 @@ def openthedoor():
             print("granted")
             granted = "YES"
 
-        if idswp == "P_22311680" : # ID de Marouan, utilisé pour les test
+
+        print("id pool request", idswp)
+        print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "22312300")
+        if idswp == "P_22311680" or idswp == "P_22312300": 
             mqtt_client.publish(topicname_second, granted)
 
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
