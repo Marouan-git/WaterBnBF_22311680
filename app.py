@@ -134,25 +134,39 @@ def openthedoor():
 
         ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
+        # Check if user exists
         user_exists = userscollection.find_one({"name": idu}) is not None
-        pool = poolscollection.find_one_and_update(
-            {"pool_id": idswp, "occuped": False},
-            {"$set": {"granted": "YES"}},
-            return_document=True
-        ) if idswp else None
 
-        print(f'user exists : {user_exists}')
-        print(f'pool exists : {pool}')
+        # Check if pool exists
+        pool = poolscollection.find_one({"pool_id": idswp, "occuped": False})
 
-        if user_exists and pool:
-            print("granted")
+        if pool and user_exists:
+            # Update the 'granted' field in the pool document to "YES"
             granted = "YES"
+        
+        # Update the 'granted' field in the pool document
+        poolscollection.update_one({"pool_id": idswp}, {"$set": {"granted": granted}})
+
+        
+
+        # pool = poolscollection.find_one_and_update(
+        #     {"pool_id": idswp, "occuped": False},
+        #     {"$set": {"granted": granted}},
+        #     return_document=True
+        # ) if idswp else None
+
+        # print(f'user exists : {user_exists}')
+        # print(f'pool exists : {pool}')
+
+        # if user_exists and pool:
+        #     print("granted")
+        #     granted = "YES"
 
 
-        print("id pool request", idswp)
-        print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "P_22312300")
-        if idswp == "P_22311680" or idswp == "P_22312300": 
-            mqtt_client.publish(topicname_second, granted)
+        # print("id pool request", idswp)
+        # print("Condition realized to publish message :", idswp == "P_22311680" or idswp == "P_22312300")
+        # if idswp == "P_22311680" or idswp == "P_22312300": 
+        #     mqtt_client.publish(topicname_second, granted)
 
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
 
