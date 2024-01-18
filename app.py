@@ -79,6 +79,15 @@ topicname = "uca/iot/piscine"
 topicname_second = "uca/iot/tajine_granted"
 mqtt_client = Mqtt(app)
 
+@mqtt_client.on_connect()
+def handle_connect(client, userdata, flags, rc):
+   if rc == 0:
+       print('Connected successfully')
+       mqtt_client.subscribe(topicname) # subscribe topic
+       mqtt_client.subscribe(topicname_second) # subscribe topic
+   else:
+       print('Bad connection. Code:', rc)
+
 
   
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -170,14 +179,7 @@ def publish_message():
    publish_result = mqtt_client.publish(request_data['topic'], request_data['msg'])
    return jsonify({'code': publish_result[0]})
 
-@mqtt_client.on_connect()
-def handle_connect(client, userdata, flags, rc):
-   if rc == 0:
-       print('Connected successfully')
-       mqtt_client.subscribe(topicname) # subscribe topic
-       mqtt_client.subscribe(topicname_second) # subscribe topic
-   else:
-       print('Bad connection. Code:', rc)
+
 
 
 @mqtt_client.on_message()
@@ -232,5 +234,5 @@ if __name__ == '__main__':
 
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run(debug=True, use_reloader=False) #host='127.0.0.1', port=5000)
+    app.run(debug=False, use_reloader=False) #host='127.0.0.1', port=5000)
     
