@@ -78,9 +78,7 @@ app.config['MQTT_TLS_ENABLED'] = False  # If your broker supports TLS, set it Tr
 topicname = "uca/iot/piscine"
 topicname_second = "uca/iot/tajine_granted"
 mqtt_client = Mqtt(app)
-print("Initial publish")
-mqtt_client.publish(topicname_second, "Initial Test Message")
-print("Initial publish Done!!!")
+
 
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
@@ -157,11 +155,18 @@ def openthedoor():
             mqtt_client.publish(topicname_second, granted)
 
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
+
+@app.route("/get_access_status/<esp_id>")
+def get_access_status(esp_id):
+    pool = poolscollection.find_one({"pool_id": esp_id})
+    granted_status = pool["granted"] if pool else "NO"
+    return jsonify({'granted': granted_status})
     
 
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
 # Test with => curl https://waterbnbf.onrender.com/open?who=gillou
 
+# Test the mqtt publish
 @app.route('/testmqtt')
 def test_mqtt():
     try:
