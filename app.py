@@ -13,6 +13,8 @@ from flask_mqtt import Mqtt
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 
+import datetime
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Initialisation :  Mongo DataBase
 
@@ -44,6 +46,9 @@ else:
     
 userscollection = db.users
 poolscollection = db.pools
+
+# Access requests collection
+accessrequestscollection = db.accessrequests
 #-----------------------------------------------------------------------------
 # import authorized users .. if not already in ?
 if ADMIN :
@@ -146,6 +151,14 @@ def openthedoor():
         
         # Update the 'granted' field in the pool document
         poolscollection.update_one({"pool_id": idswp}, {"$set": {"granted": granted}})
+    
+    # Log the access request
+    accessrequestscollection.insert_one({
+        "pool_id": idswp,
+        "user_id": idu,
+        "granted": granted,
+        "timestamp": datetime.datetime.now()
+    })
 
     return jsonify({'idu': session.get('idu', ''), 'idswp': session.get('idswp', ''), "granted": granted}), 200
 
