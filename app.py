@@ -78,6 +78,9 @@ app.config['MQTT_TLS_ENABLED'] = False  # If your broker supports TLS, set it Tr
 topicname = "uca/iot/piscine"
 topicname_second = "uca/iot/tajine_granted"
 mqtt_client = Mqtt(app)
+print("Initial publish")
+mqtt_client.publish(topicname_second, "Initial Test Message")
+print("Initial publish Done!!!")
 
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
