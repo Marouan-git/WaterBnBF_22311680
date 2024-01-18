@@ -135,6 +135,15 @@ def openthedoor():
 # Test with => curl -X POST https://waterbnbf.onrender.com/open?who=gillou
 # Test with => curl https://waterbnbf.onrender.com/open?who=gillou
 
+@app.route('/testmqtt')
+def test_mqtt():
+    try:
+        publish_result = mqtt_client.publish(topicname_second, "Test Message")
+        return jsonify({'result': 'Message published', 'details': str(publish_result)})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
+
 @app.route("/users")
 def lists_users(): # Liste des utilisateurs déclarés
     todos = userscollection.find()
