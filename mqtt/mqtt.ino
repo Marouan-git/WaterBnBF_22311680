@@ -33,6 +33,9 @@ String piscine_id = "P_22311680";
 const int ledPin = 2; // LED Pin
 const int lightSensorPin = 33;
 
+// Red LED pin (to be turned on if invalid json)
+const int redLEDPin = 21; // Red LED on GPIO 21
+
 // LED Strip Definitions
 const int ledStripPin = 12; // LED strip connected to GPIO 13
 #define NUMLEDS 5
@@ -43,12 +46,18 @@ const uint32_t GREEN = strip.Color(0, 255, 0);  // Green color
 const uint32_t YELLOW = strip.Color(255, 255, 0); // Yellow color
 const uint32_t RED = strip.Color(255, 0, 0);    // Red color
 
-// Manage red led time
+// Manage red led strip time
 bool lastGrantedState = false; // Tracks the last known 'granted' state
 bool granted = true;
 unsigned long redLedStartTime = 0;
 const unsigned long redLedDuration = 3000; // 3 seconds
 bool isRedLedOn = false;
+
+
+// Manage red led time for invalid json
+unsigned long redLedInvalidJsonStartTime = 0;
+const unsigned long redLedInvalidJsonDuration = 3000; // 3 seconds
+bool isredLedInvalidJsonOn = false;
 
 // Manage mqtt publish frequency
 const unsigned long publish_freq = 10000; // 10 seconds
@@ -67,7 +76,7 @@ float temperature = 0;
 #define MQTT_HOST IPAddress(192, 168, 1, XXX)
 const char* mqtt_server = "test.mosquitto.org"; // MQTT server
 
-#define TOPIC_TEMP "uca/iot/piscine"
+#define TOPIC_TEMP "uca/iot/couscous"
 #define TOPIC_GRANTED "uca/iot/tajine_granted"
 
 
@@ -108,7 +117,7 @@ typedef struct {
   String user = hostname;
 
   // Network 
-  String uptime = "NOP";
+  int uptime = 0;
   String ssid = "NOP";
   String mac = "NOP";
   String ip = "NOP";
@@ -138,6 +147,8 @@ void setup() {
 
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
+
+  pinMode(redLEDPin, OUTPUT);
 
   tempSensor.begin();
 
@@ -181,6 +192,15 @@ void loop() {
   if (currentMillis - lastHttpCheck > httpCheckInterval) {
     lastHttpCheck = currentMillis;
     checkAccessStatus();
+  }
+
+
+  // Check Json validation
+
+  // Check if Red LED (json validation) is on and manage its duration
+  if (isredLedInvalidJsonOn && currentMillis - redLedInvalidJsonStartTime > redLedInvalidJsonDuration) {
+    isredLedInvalidJsonOn = false;
+    digitalWrite(redLEDPin, LOW); // Turn off red led
   }
 
 
@@ -245,6 +265,13 @@ void mqtt_pubcallback(char* topic, byte* payload, unsigned int length) {
     if (error) {
       USE_SERIAL.print(F("deserializeJson() failed: "));
       USE_SERIAL.println(error.c_str());
+      return;
+    }
+
+    // JSON validation
+    if (!validateJsonStructure(jsonDoc)) {
+      USE_SERIAL.println("Invalid JSON structure");
+      setRedLed(); // Turn on red led if json is not valid
       return;
     }
   
@@ -388,9 +415,106 @@ void setJdoc(StaticJsonDocument<1024>& jdoc) {
 }
 
 
+// JSON validation
+
+bool validateJsonStructure(const DynamicJsonDocument& doc) {
+
+    
+    // Top-level objects
+    if (!doc.containsKey("status") || !doc.containsKey("location") ||
+        !doc.containsKey("info") || !doc.containsKey("net") ||
+        !doc.containsKey("piscine") || !doc.containsKey("regul") ||
+        !doc.containsKey("reporthost")) {
+        return false;
+    }
 
 
-// ############## Led strip ##############
+    // Status object
+    JsonObjectConst jstatus = doc["status"];
+    if (!jstatus.containsKey("temperature") || !jstatus["temperature"].is<float>() ||
+        !jstatus.containsKey("light") || !jstatus["light"].is<int>() ||
+        !jstatus.containsKey("heat") || !jstatus["heat"].is<String>() ||
+        !jstatus.containsKey("cold") || !jstatus["cold"].is<String>() ||
+        !jstatus.containsKey("fire") || (!jstatus["fire"].is<bool>() && !jstatus["fire"].is<String>()) || // in case we find "NOP"
+        !jstatus.containsKey("regul") || !jstatus["regul"].is<String>()) {
+        return false;
+    }
+
+
+    // Location object
+    JsonObjectConst location = doc["location"];
+    if (!location.containsKey("room") || !location["room"].is<String>() ||
+        !location.containsKey("gps")) {
+        return false;
+    }
+
+    JsonObjectConst gps = location["gps"];
+    if (!gps.containsKey("lat") || !gps["lat"].is<float>() ||
+        !gps.containsKey("lon") || !gps["lon"].is<float>() ||
+        !location.containsKey("address") || !location["address"].is<String>()) {
+        return false;
+    }
+
+ 
+    // Info object
+    JsonObjectConst info = doc["info"];
+    if (!info.containsKey("ident") || !info["ident"].is<String>() ||
+        !info.containsKey("loc") || !info["loc"].is<String>() ||
+        !info.containsKey("user") || !info["user"].is<String>()) {
+        return false;
+    }
+
+
+    // Net object
+    JsonObjectConst net = doc["net"];
+    if (!net.containsKey("uptime") || (!net["uptime"].is<int>() && !net["uptime"].is<String>()) || // Sometimes we find "NOP"
+        !net.containsKey("ssid") || !net["ssid"].is<String>() ||
+        !net.containsKey("mac") || !net["mac"].is<String>() ||
+        !net.containsKey("ip") || !net["ip"].is<String>()) {
+        return false;
+    }
+
+    
+    // Piscine object
+    JsonObjectConst piscine = doc["piscine"];
+    if (!piscine.containsKey("hotspot") || !piscine["hotspot"].is<bool>() ||
+        !piscine.containsKey("occuped") || !piscine["occuped"].is<bool>()) {
+        return false;
+    }
+
+
+    
+    // Regulation object
+    JsonObjectConst regul = doc["regul"];
+    if (!regul.containsKey("ht") || !regul["ht"].is<float>() ||
+        !regul.containsKey("lt") || !regul["lt"].is<float>()) {
+        return false;
+    }
+
+    
+    // ReportHost object
+    JsonObjectConst reporthost = doc["reporthost"];
+    if (!reporthost.containsKey("target_ip") || !reporthost["target_ip"].is<String>() ||
+        !reporthost.containsKey("target_port") || (!reporthost["target_port"].is<int>() && !reporthost["target_port"].is<String>()) ||
+        !reporthost.containsKey("sp") || (!reporthost["sp"].is<int>() && !reporthost["sp"].is<String>())) {
+        return false;
+    }
+
+    return true; // JSON structure is valid
+}
+
+
+// Set red led according to json validation
+void setRedLed() {
+  digitalWrite(redLEDPin, HIGH); // Turn on Red LED
+  redLedInvalidJsonStartTime = millis();
+  isredLedInvalidJsonOn = true;
+}
+
+
+
+
+// ############## Granted status and Led strip ##############
 
 // Function to set the color of the entire strip
 void setColor(uint32_t color) {
@@ -406,11 +530,6 @@ void setColor(uint32_t color) {
 // Update LED color according to granted and occupied status
 void updatePoolStatus() {
     unsigned long currentMillis = millis();
-
-    USE_SERIAL.println("GRANTED in update pool status");
-    USE_SERIAL.println(granted);
-    USE_SERIAL.println("REDLEDON in update pool status");
-    USE_SERIAL.println(isRedLedOn);
     
     // Handle Red LED (if access is not granted and Red LED is not already on)
     if (!granted && !isRedLedOn) {

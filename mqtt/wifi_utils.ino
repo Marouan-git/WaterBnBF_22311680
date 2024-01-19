@@ -116,7 +116,6 @@ void wifi_connect_multi(String hostname){
   wm.addAP("HUAWEI-553A", "QTM06RTT");
   wm.addAP("GMAP", "vijx47050");
   wm.addAP("Livebox-B870","MYCNcZqnvsWsiy7s52");
-  wm.addAP("ASUSisgood", "Lourisako74");
   
   WiFi.mode(WIFI_OFF);   
   WiFi.mode(WIFI_STA); // Set WiFi to station mode 

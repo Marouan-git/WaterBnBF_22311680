@@ -6,6 +6,29 @@ Membres de l'équipe : Amine HADDOU et Marouan BOULLI
 
 **Graphiques MongoDB** : https://charts.mongodb.com/charts-project-0-asysu/public/dashboards/c11acb46-f078-499e-83e7-5e8c6a2bba0f
 
+
+## Validation JSON
+
+### Sur NodeRed
+
+Ajout d'un noeud de validation du Json (Json_valid) reçu pour s'assurer qu'il corresponde à la structure attendue avant de l'envoyer à la map.  
+S'il ne correspond pas à la structure attendue, un popup s'affiche sur le dashboard NodeRed informant qu'un Json non valide a été reçu.
+
+Pour tester, envoyer un json non valide sur le topic uca/iot/piscine : 
+```
+mosquitto_pub -h test.mosquitto.org -t uca/iot/piscine -m "{}"
+```
+
+
+### Sur Arduino (ESP32)
+
+La fonction validateJsonStructure permet de vérifier que les json reçus via mqtt sont valides. 
+
+Si ça n'est pas le cas, aucun traitement n'est réalisé et la LED rouge s'allume pendant quelques secondes puis s'éteint (durée paramétrable au niveau des constantes au début du code).
+
+
+
+
 ## Communication Flask -> ESP32
 
 #### MQTT
