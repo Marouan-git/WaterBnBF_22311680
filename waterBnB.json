@@ -1,0 +1,864 @@
+[
+    {
+        "id": "5a1c67a47d3f25d1",
+        "type": "tab",
+        "label": "WaterBnB",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "060f1c89001bc852",
+        "type": "group",
+        "z": "5a1c67a47d3f25d1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "24b860965f4f2e10",
+            "8419505149f73834",
+            "1bf86383e6aecccc"
+        ],
+        "x": 94,
+        "y": 399,
+        "w": 772,
+        "h": 142
+    },
+    {
+        "id": "6d323d06b1a55cc5",
+        "type": "group",
+        "z": "5a1c67a47d3f25d1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "54299795f5fec885",
+            "6d83b15afc4e9df8"
+        ],
+        "x": 94,
+        "y": 299,
+        "w": 412,
+        "h": 82
+    },
+    {
+        "id": "e43b0b49ede4c9cf",
+        "type": "group",
+        "z": "5a1c67a47d3f25d1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "b1730414b337435c",
+            "e90ad3a8446f7122",
+            "b1b68e5b1ef9470a",
+            "2d3df0fbf4a9414b",
+            "be3e14f2a8fb8d6c",
+            "6479e4a36d704a8a",
+            "85f70168c3a4d732",
+            "f2521ed07dccff79"
+        ],
+        "x": 94,
+        "y": 579,
+        "w": 1012,
+        "h": 182
+    },
+    {
+        "id": "e456ae3a8a38ad80",
+        "type": "group",
+        "z": "5a1c67a47d3f25d1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "d9d0a1f5661e8116",
+            "cc1ffc3c52bfa853",
+            "d21ae4fba9a59e6e"
+        ],
+        "x": 94,
+        "y": 1019,
+        "w": 532,
+        "h": 162
+    },
+    {
+        "id": "84ace99b30650aea",
+        "type": "group",
+        "z": "5a1c67a47d3f25d1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "eb5adc8063b1f715",
+            "7ccbf537e7d6ab51",
+            "6e272aab1951f2dc",
+            "81d0858d89f279c8"
+        ],
+        "x": 94,
+        "y": 839,
+        "w": 812,
+        "h": 142
+    },
+    {
+        "id": "1f957d3ed17f2c0d",
+        "type": "inject",
+        "z": "5a1c67a47d3f25d1",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 190,
+        "y": 200,
+        "wires": [
+            [
+                "0ba7136572389680"
+            ]
+        ]
+    },
+    {
+        "id": "0ba7136572389680",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Téléportation",
+        "func": "// create random position\nvar lat = 43.61999752 + Math.random() * 0.1;\nvar lon = 7.0499998 + Math.random() * 0.1;\nmsg.payload={\n    layer:\"swimming pools\",\n    lat:lat, \n    lon:lon, \n    name:global.get(\"clientid\"), \n    description: \"Temperature in my swimming pool\",\n    value: 20.5,\n    unit: \"°C\",\n    icon:\"male\", \n    color:\"#000\"};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 240,
+        "wires": [
+            [
+                "c809ec45af4c259e",
+                "8d74110bfb56cb30",
+                "80047080dd53f2c2"
+            ]
+        ]
+    },
+    {
+        "id": "492df91eb00f30da",
+        "type": "ui_button",
+        "z": "5a1c67a47d3f25d1",
+        "name": "",
+        "group": "deeac9a0ed147aa7",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Move Client",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "fa-male",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 190,
+        "y": 260,
+        "wires": [
+            [
+                "0ba7136572389680"
+            ]
+        ]
+    },
+    {
+        "id": "b1730414b337435c",
+        "type": "mqtt in",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "",
+        "topic": "uca/iot/piscine",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "cf385521e74fa12a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 660,
+        "wires": [
+            [
+                "b1b68e5b1ef9470a",
+                "be3e14f2a8fb8d6c"
+            ]
+        ]
+    },
+    {
+        "id": "e90ad3a8446f7122",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b1b68e5b1ef9470a",
+        "type": "json",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 700,
+        "wires": [
+            [
+                "8042ba92c4a0aa63",
+                "6479e4a36d704a8a"
+            ]
+        ]
+    },
+    {
+        "id": "c809ec45af4c259e",
+        "type": "worldmap-tracks",
+        "z": "5a1c67a47d3f25d1",
+        "name": "",
+        "depth": "6",
+        "layer": "combined",
+        "smooth": false,
+        "x": 650,
+        "y": 220,
+        "wires": [
+            [
+                "8d74110bfb56cb30"
+            ]
+        ]
+    },
+    {
+        "id": "8d74110bfb56cb30",
+        "type": "ui_worldmap",
+        "z": "5a1c67a47d3f25d1",
+        "group": "deeac9a0ed147aa7",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "name": "",
+        "lat": "43.61999752",
+        "lon": "7.0499998",
+        "zoom": "11",
+        "layer": "OSMC",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "deg",
+        "showgrid": "true",
+        "allowFileDrop": "false",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN,TL,HM",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriO,EsriDG,NatGeo,UKOS,OpTop",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 1220,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "54299795f5fec885",
+        "type": "ui_button",
+        "z": "5a1c67a47d3f25d1",
+        "g": "6d323d06b1a55cc5",
+        "name": "",
+        "group": "deeac9a0ed147aa7",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 170,
+        "y": 340,
+        "wires": [
+            [
+                "6d83b15afc4e9df8"
+            ]
+        ]
+    },
+    {
+        "id": "6d83b15afc4e9df8",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "g": "6d323d06b1a55cc5",
+        "name": "Reset Layer",
+        "func": "// clear the \"by default\" layer \nmsg.payload = {\"command\": { \"clear\": \"swimming pools\" } };\nflow.set(\"clientid\", null);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 340,
+        "wires": [
+            [
+                "8d74110bfb56cb30"
+            ]
+        ]
+    },
+    {
+        "id": "2d3df0fbf4a9414b",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "json adapt",
+        "func": "//http://stevesnoderedguide.com/node-red-functions\n\nvar nmsg = { // nouveau message \n  topic: msg.topic // on garde l'ancien topic \n};\n\nvar busy;\nif (msg.payload.piscine.occuped === false)\n  busy = \"battery-empty\";\nelse\n  busy = \"battery-full\";\n\nvar hsc;\nif (msg.payload.piscine.hotspot === false)\n  hsc = \"Blue\";\nelse\n  hsc = \"Red\";\n\nvar wl_label = \"Lien de demande d'ouverture de \" + msg.payload.info.ident \n                + \" par \" + flow.get('clientid') + \" : Cliquez moi !\"\nnmsg.payload = { // on modifie/adapte la payload\n  layer: \"swimming pools\",\n  name: msg.payload.info.ident,\n  description: msg.payload.info.user, \n  //weblink: { \"name\": wl_label, \"url\":\"https://localhost:8000/open?idu=\" + flow.get('clientid') + \"&idswp=\" + msg.payload.info.ident},\n  weblink: { \"name\": wl_label, \"url\":\"https://waterbnb-22311680.onrender.com/open?idu=\" + flow.get('clientid') + \"&idswp=\" + msg.payload.info.ident},\n  radius:100,\n  unit: \"C\",\n  color: \"#000\",\n  value: msg.payload.status.temperature,\n  lat: msg.payload.location.gps.lat,\n  lon: msg.payload.location.gps.lon,\n  iconColor: hsc,\n  icon: busy\n}\n\nreturn nmsg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 620,
+        "wires": [
+            [
+                "8d74110bfb56cb30",
+                "e90ad3a8446f7122"
+            ]
+        ]
+    },
+    {
+        "id": "d9d0a1f5661e8116",
+        "type": "http in",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e456ae3a8a38ad80",
+        "name": "Open",
+        "url": "/open",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1080,
+        "wires": [
+            [
+                "cc1ffc3c52bfa853",
+                "d21ae4fba9a59e6e"
+            ]
+        ]
+    },
+    {
+        "id": "cc1ffc3c52bfa853",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e456ae3a8a38ad80",
+        "name": "Open debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "d21ae4fba9a59e6e",
+        "type": "http response",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e456ae3a8a38ad80",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 520,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "24b860965f4f2e10",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "d": true,
+        "g": "060f1c89001bc852",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "8419505149f73834",
+        "type": "ui_form",
+        "z": "5a1c67a47d3f25d1",
+        "g": "060f1c89001bc852",
+        "name": "WaterBnB Client Identification",
+        "label": "WaterBnB Client Login (= numéro étudiant UCA)",
+        "group": "deeac9a0ed147aa7",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Client ID",
+                "value": "clientid",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "clientid": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "clientform",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 250,
+        "y": 480,
+        "wires": [
+            [
+                "24b860965f4f2e10",
+                "1bf86383e6aecccc"
+            ]
+        ]
+    },
+    {
+        "id": "80047080dd53f2c2",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "eb5adc8063b1f715",
+        "type": "mqtt in",
+        "z": "5a1c67a47d3f25d1",
+        "g": "84ace99b30650aea",
+        "name": "",
+        "topic": "uca/waterbnb/GillesM/a50",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "cd15e03f7a9ee55a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 920,
+        "wires": [
+            [
+                "6e272aab1951f2dc"
+            ]
+        ]
+    },
+    {
+        "id": "7ccbf537e7d6ab51",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "g": "84ace99b30650aea",
+        "name": "debug from owntracks MQTT topic",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "6e272aab1951f2dc",
+        "type": "json",
+        "z": "5a1c67a47d3f25d1",
+        "g": "84ace99b30650aea",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 450,
+        "y": 920,
+        "wires": [
+            [
+                "7ccbf537e7d6ab51",
+                "81d0858d89f279c8"
+            ]
+        ]
+    },
+    {
+        "id": "81d0858d89f279c8",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "g": "84ace99b30650aea",
+        "name": "json convert",
+        "func": "// Convert json of owntracks to worldmap\nreturn {\n    payload: {\n        layer:\"waterbnb\",\n        name: msg.payload.tid,\n        lat: msg.payload.lat,\n        lon: msg.payload.lon,\n        icon: 'user-circle-o',\n        iconColor : \"Blue\"\n    }\n};",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 880,
+        "wires": [
+            [
+                "8d74110bfb56cb30"
+            ]
+        ]
+    },
+    {
+        "id": "be3e14f2a8fb8d6c",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "debug  from swimming pools",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "7bc3646ac7fdc2d6",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Formulaire d'identification du client",
+        "info": "Grâce au formulaire, on positionne une variable globale au flow : l'ident du client qui utilise le service.",
+        "x": 1240,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "1bf86383e6aecccc",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "g": "060f1c89001bc852",
+        "name": "Callback du formulaire d'identification",
+        "func": "// Ce node permet de stocker l'identificateur du \n// client dans le flow (un peu comme une variable \n// globale)\n\n\n//https://stevesnoderedguide.com/node-red-variables\n//https://techexplorations.com/guides/esp32/node-red-esp32-project/node-red-messages-variables/\n\nif (msg.topic === \"clientform\"){\n  flow.set(\"clientid\", msg.payload.clientid);\n  }\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "093463d6b3af3a67",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Fichier WaterBnB.json => Dashboard \"donné\" à un client du service WaterBnB",
+        "info": "Lorsqu'un client va vouloir accéder à une piscine, il va devoir utiliser cette interface graphique.\n",
+        "x": 350,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1c02f25e4ddfb993",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Reset display",
+        "info": "",
+        "x": 650,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "4c443b567ac455cc",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Affichage avec hyperlien d'ouverture des piscines ",
+        "info": "",
+        "x": 1280,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "091705819704d8ed",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Pour tester la réception de la demande d'ouverture",
+        "info": "",
+        "x": 890,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "df54765cdd84c1ba",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Affichage de la géolocalisation du client de WaterBnB",
+        "info": "",
+        "x": 1120,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "39c62d6262b782f7",
+        "type": "comment",
+        "z": "5a1c67a47d3f25d1",
+        "name": "trois choses à paramétrer => le topic de owntracks, le lien de demande d'ouverture et l'ID du client via le formulaire",
+        "info": "Lorsqu'un client va vouloir accéder à une piscine, il va devoir utiliser cette interface graphique.\n",
+        "x": 470,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "8042ba92c4a0aa63",
+        "type": "debug",
+        "z": "5a1c67a47d3f25d1",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "6479e4a36d704a8a",
+        "type": "function",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "json_valid",
+        "func": "var expectedStructure = {\n    \"status\": {     \n        \"temperature\": null, \n        \"light\": null,\n        \"regul\": null,\n        \"fire\": null,\n        \"heat\": null,\n        \"cold\": null\n    },\n    \"location\": {\n        \"room\": null,\n        \"gps\": {     \n            \"lat\": null,\n            \"lon\": null  \n        },\n        \"address\": null\n    },\n    \"regul\": {\n        \"lt\": null,\n        \"ht\": null,\n    },\n    \"info\": {\n        \"ident\": null,\n        \"loc\": null,\n        \"user\": null,\n    },\n    \"net\": {\n        \"uptime\": null,\n        \"ssid\": null,\n        \"mac\": null,\n        \"ip\": null,\n    },\n    \"reporthost\": {\n        \"target_ip\": null,\n        \"target_port\": null,\n        \"sp\": null\n    },\n    \"piscine\": {\n        \"hotspot\": null,\n        \"occuped\": null,\n    }       \n};\n\n\n// Recursive function to check structure\nfunction isValidStructure(obj, expected) {\n    for (var key in expected) {\n        if (!obj.hasOwnProperty(key)) {\n            node.warn(\"Missing key: \" + key); // Debug message\n            return false; // Key is missing\n        }\n        if (typeof expected[key] === 'object' && expected[key] !== null && !(expected[key] instanceof Array)) {\n            // It's a nested object, not an array, so check its structure recursively\n            if (!isValidStructure(obj[key], expected[key])) {\n                node.warn(\"Invalid structure in key: \" + key); // Debug message\n                return false; // Nested structure doesn't match\n            }\n        } else if (expected[key] === null && typeof obj[key] !== 'object') {\n            // It's a final value, proceed\n            continue;\n        } else {\n            // Mismatch in expected type\n            node.warn(\"Type mismatch in key: \" + key); // Debug message\n            return false;\n        }\n    }\n    return true; // All keys matched\n}\n\nif (isValidStructure(msg.payload, expectedStructure)) {\n    msg.isValid = true;\n} else {\n    msg.isValid = false;\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 700,
+        "wires": [
+            [
+                "85f70168c3a4d732"
+            ]
+        ]
+    },
+    {
+        "id": "85f70168c3a4d732",
+        "type": "switch",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "name": "isValid",
+        "property": "isValid",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 650,
+        "y": 700,
+        "wires": [
+            [
+                "2d3df0fbf4a9414b"
+            ],
+            [
+                "f2521ed07dccff79"
+            ]
+        ]
+    },
+    {
+        "id": "f2521ed07dccff79",
+        "type": "ui_toast",
+        "z": "5a1c67a47d3f25d1",
+        "g": "e43b0b49ede4c9cf",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": true,
+        "className": "",
+        "topic": "Invalid Json",
+        "name": "Invalid_Json",
+        "x": 810,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "deeac9a0ed147aa7",
+        "type": "ui_group",
+        "z": "5a1c67a47d3f25d1",
+        "name": "Service WaterBnB :",
+        "tab": "443b33e4eda1c892",
+        "order": 1,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "cf385521e74fa12a",
+        "type": "mqtt-broker",
+        "name": "Mosquitto",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "Marouan",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "cd15e03f7a9ee55a",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "mqtt.eclipseprojects.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "15",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "443b33e4eda1c892",
+        "type": "ui_tab",
+        "z": "5a1c67a47d3f25d1",
+        "name": "WaterBnB",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
