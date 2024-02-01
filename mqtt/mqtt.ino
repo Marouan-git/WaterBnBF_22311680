@@ -76,8 +76,8 @@ float temperature = 0;
 #define MQTT_HOST IPAddress(192, 168, 1, XXX)
 const char* mqtt_server = "test.mosquitto.org"; // MQTT server
 
-#define TOPIC_TEMP "uca/iot/couscous"
-#define TOPIC_GRANTED "uca/iot/tajine_granted"
+#define TOPIC_TEMP "uca/iot/piscine"
+#define TOPIC_GRANTED "uca/iot/"
 
 
 WiFiClient espClient;
